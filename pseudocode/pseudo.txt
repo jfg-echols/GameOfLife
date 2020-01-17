@@ -1,0 +1,172 @@
+// For a space that is 'populated':
+//    Each cell with one or no neighbors dies, as if by solitude.
+//    Each cell with four or more neighbors dies, as if by overpopulation.
+//    Each cell with two or three neighbors survives.
+//For a space that is 'empty' or 'unpopulated'
+//    Each cell with three neighbors becomes populated.
+
+class Game {
+    var int height
+    var int width
+    var int turn
+    var cell board = cells[]
+    
+    function newboard(){
+        do {
+            heightinput = readhost: how many rows?
+        } until (heightinput > 1 & <= 10)
+        do {
+            withinput = readhost: how many columns?
+        } until (widthinput > 1 & <= 10)
+
+        Game.board[widthinput,heightinput]
+        
+        for each space in matrix {
+            new cell (based on x,y)
+            cell.checkborders()
+        }
+        turn = 0
+    }
+    function updateGame(){
+        for each space in matrix {
+            cell.countNeighbours
+            cell.updatestatus
+        }
+    }
+    function printGame(){
+        print("turn = $turn")
+        foreach space in matrix {
+            if (cell.status = empty) {
+                print(" ")
+            } elseif (cell.status = alive) {
+                print("o")
+            } elseif (cell.status = dead) {
+                print("x")
+            }
+        }
+    }
+}
+
+class Cell {
+    var int xpos
+    var int ypos
+    var bool istop
+    var bool isbottom
+    var bool isleft
+    var bool isright
+    var neighbors
+    var enum state (alive,dead,empty)
+    
+    function {getters and setters}
+
+    function checkborders {
+        if (x =< 0) {
+            isleft = true
+        } else { 
+            isleft = false
+        }
+        if (x >= game.width-1) (
+            isright = true
+        ) else {
+            isleft = false
+        }
+        if (y =< 0) {
+            isbottom = true
+        } else {
+            isbottom = false
+        }
+        if (y >= game.height-1) {
+            istop = true
+        } else { 
+            istop = false
+        }
+    }
+    function countNeighbours {
+        neighbours = 0
+        //assuming 0,0 at the center
+        
+        // bottom row 
+        
+        if (!isbottom){
+            //checking -1,-1
+            if (!isleft) {
+                if (Game.board[x-1,y-1].cell.status = alive) {
+                    neighbors+=1
+                }
+            }
+            //checking 0,-1
+            if (Game.board[x,y-1].cell.status = alive) {
+                neighbors+=1
+            }
+            //checking 1,-1
+            if (!isright){
+                if (Game.board[x+1,y-1].cell.status = alive) {
+                    neighbors+=1
+                }
+            }
+        }
+        
+        //middle
+        //checking -1,0
+        if (!isleft) {
+            if (Game.board[x-1,y].cell.status = alive) {
+                neighbors+=1
+            }
+        }
+        //checking 1,0
+        if (!isright) {
+            if (Game.board[x+1,y].cell.status = alive) {
+                neighbors+=1
+            }
+        }
+
+        //top row
+        if (!istop) {
+            //checking -1,1
+            if (!isleft) {
+                if (Game.board[x-1,y+1].cell.status = alive) {
+                    neighbors+=1
+                }
+            }
+            //checking 0,1
+            if (Game.board[x-1,y+1].cell.status = alive) {
+                neighbors+=1
+            }
+            //checking 1,1
+            if (!isright) {
+                if (Game.board[x-1,y+1].cell.status = alive) {
+                    neighbors+=1
+                }
+            }
+        }    
+    }
+    function updatestatus (status,neighbors)(
+        // For a space that is 'populated':
+        if (status = alive) {
+            //    Each cell with one or no neighbors dies, as if by solitude.
+            if (neighbours <= 1) {
+                status = dead
+            //    Each cell with four or more neighbors dies, as if by overpopulation.
+            } elseif (neighbors >= 4 ) {
+                status = dead                
+            }
+        } elseif ( status = empty) {
+            if neighbors = 3 {
+                status = alive
+            }
+        } elseif ( status = dead) {
+            status = empty
+        }
+    )
+
+}
+main (
+    game.newboard()
+
+    input = " "
+    do {
+        game.updateGame
+        game.printGame
+        input = readhost "next turn? space for next turn, anything else to exit"
+    } until (input != " ")
+)
