@@ -49,28 +49,7 @@ class Cell {
         $width = $gameboard[0].count
         $neighbours = 0
         
-        #assertions about positioning
-        #TODO: turn the isleft/right/top/bottom variables into properties of the cell and built on construction
-        if (($this.xcoord) -le 0) {
-            $isleft = $false
-        } else { 
-            $isleft = $true
-        }
-        if ($this.xcoord -ge ($width-1)) {
-            $isright = $false
-        }else {
-            $isright = $true
-        }
-        if ($this.ycoord -le 0) {
-            $istop = $false
-        }else {
-            $istop = $true
-        }
-        if ($this.ycoord -le ($height -1)) {
-            $isbottom = $false
-        } else {
-            $isbottom = $true
-        }
+
         <#
         NOTES: 
         1) Y AXIS IS REVERSED ON OUTPUT - SEE RESULTS OF GAME.printCellPositions()
@@ -80,53 +59,53 @@ class Cell {
         
         
         #top row
-        if (!$istop) {
+        if ($this.ycoord -ge 1) {
             #topleft -1,-1
-            if (!$isleft) {
+            if ($this.xcoord -ge 1) {
                 if ($gameboard[$this.ycoord-1][$this.xcoord-1].isalive()) {
                     $neighbours += 1
                 }
             }
             #topmid 0,-1
-            if ($gameboard[$this.ycoord-1][$this.xcoord]) {
+            if ($gameboard[$this.ycoord-1][$this.xcoord].isalive()) {
                 $neighbours += 1
             }
             #topright 1,-1
-            if (!$isright) {
-                if ($gameboard[$this.ycoord-1][$this.xcoord+1]) {
+            if ($this.xcoord -le ($width-1)) {
+                if ($gameboard[$this.ycoord-1][$this.xcoord+1].isalive()) {
                     $neighbours += 1
                 }
             }
         }
         #middle row
         #midleft -1,0
-        if (!$isleft) {
-            if ($gameboard[$this.ycoord][$this.xcoord-1]) {
+        if ($this.xcoord -ge 1) {
+            if ($gameboard[$this.ycoord][$this.xcoord-1].isalive()) {
                 $neighbours += 1
             }
         }
         #midright 1,0
-        if (!$isright) {
-            if ($gameboard[$this.ycoord][$this.xcoord+1]) {
+        if ($this.xcoord -le ($width-1)) {
+            if ($gameboard[$this.ycoord][$this.xcoord+1].isalive()) {
                 $neighbours += 1
             }
         }
         
         #bottom row
-        if (!$isbottom) {
+        if ($this.ycoord -le ($height-1)) {
             #mottomleft -1,1
-            if (!$isleft) {
-                if ($gameboard[$this.ycoord+1][$this.xcoord-1]) {
+            if ($this.xcoord -ge 1) {
+                if ($gameboard[$this.ycoord+1][$this.xcoord-1].isalive()) {
                     $neighbours += 1
                 }
             }
             #bottommid 0,1
-            if ($gameboard[$this.ycoord+1][$this.xcoord]) {
+            if ($gameboard[$this.ycoord+1][$this.xcoord].isalive()) {
                 $neighbours += 1
             }
             #bottomright 1,1
-            if (!$isright) {
-                if ($gameboard[$this.ycoord+1][$this.xcoord+1]) {
+            if ($this.xcoord -le ($width-1)) {
+                if ($gameboard[$this.ycoord+1][$this.xcoord+1].isalive()) {
                     $neighbours += 1
                 }
             }

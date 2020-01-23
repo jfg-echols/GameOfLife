@@ -20,6 +20,7 @@ class LifeGame {
             $boardColumnsArray = @()
             
             for ($colcount=0; $colcount -lt $length; $colcount+=1) {
+                #want to use a constructor with the variables, but it won't work for some reason
                 [Cell] $thisCell = [Cell]::new()
                 $thisCell.setLive($false)
                 # write-host $($thisCell.isAlive())
@@ -71,6 +72,7 @@ class LifeGame {
         }
     }
     [void] printAllCellNeighbourCounts () {
+        write-host "printcellneighbours"
         for ($boardRow=0; $boardRow -lt ($this.board.Count); $boardRow+=1) {
             $printcolumnarray = @()
             foreach ($cellInRow in ($this.board[$boardRow])) {
@@ -80,12 +82,12 @@ class LifeGame {
         }
     }
     [void] updateAllCellNeighbourCounts () {
+        write-host "update cell neighbours"
         for ($boardRow=0; $boardRow -lt ($this.board.Count); $boardRow+=1) {
             $printcolumnarray = @()
             foreach ($cellInRow in ($this.board[$boardRow])) {
                 $cellInRow.countNeighbours($this.board)
             }
-            write-host $($printcolumnarray -join '')
         }
     }
 
