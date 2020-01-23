@@ -8,13 +8,16 @@ $array3 = @(7,8,9)
 
 $metarray = @{}
 $metarray[0] = $array1
-$metarray
-"--"
+#$metarray
+#"--"
 $metarray[1] = $array2
-$metarray
-"----"
+#$metarray
+#"----"
 $metarray[2] = $array3
 $metarray
 
 "------"
 $metarray[2][0]
+
+write-host "number of rows: $($metarray.count)"
+write-host "number of columns: $($metarray[0].Count)"

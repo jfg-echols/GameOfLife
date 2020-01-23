@@ -3,7 +3,7 @@ class LifeGame {
     [int] $xvalue
     [int] $yvalue
     [int] $turn
-    $board
+    [hashtable]$board
 
     LifeGame ([int] $x, [int] $y) {
         $this.xvalue = $x
@@ -15,7 +15,7 @@ class LifeGame {
         $height = $this.yvalue
         $length = $this.xvalue
         $boardRowsArray = @{}
-        for ($rowcount=0;$rowcount -lt $height; $rowcount+=1) {
+        for ($boardRow=0;$boardRow -lt $height; $boardRow+=1) {
 
             $boardColumnsArray = @()
             
@@ -24,10 +24,10 @@ class LifeGame {
                 $thisCell.setLive($false)
                 # write-host $($thisCell.isAlive())
                 $thisCell.setXCoord($colcount)
-                $thisCell.setYCoord($rowcount)
+                $thisCell.setYCoord($boardRow)
                 $boardColumnsArray += $thisCell
             }
-            $boardRowsArray[$rowcount] = $boardColumnsArray     
+            $boardRowsArray[$boardRow] = $boardColumnsArray     
         }
         $this.board = $boardRowsArray
     }
@@ -46,17 +46,11 @@ class LifeGame {
     }
 
     [void] printBoard () {
-        # $printRowArray = @()
-        
-        # write-host "$($this.board.Count)" -f Green
         write-host ":::::::::: $($this.turn) ::::::::::"
-        for ($rowcount=0;$rowcount -lt ($this.board.Count);$rowcount+=1) {
-            # write-host "new Row $rowcount" -f Cyan
+        for ($boardRow=0;$boardRow -lt ($this.board.Count);$boardRow+=1) {
             $printcolumnarray = @()
-            foreach ($column in ($this.board[$rowcount])) {
-
-                # write-host "column"
-                if ($column.isAlive()) {
+            foreach ($cellInRow in ($this.board[$boardRow])) {
+                if ($cellInRow.isAlive()) {
                     $printcolumnarray += "O"
                 } else {
                     $printcolumnarray += "-"
@@ -67,10 +61,35 @@ class LifeGame {
         }
     }
 
-    [void] updateBoard () {
-        #should be doing this in the cell class with x y coords
-
+    [void] printCellPositions () {
+        for ($boardRow=0; $boardRow -lt ($this.board.Count); $boardRow+=1) {
+            $printcolumnarray = @()
+            foreach ($cellInRow in ($this.board[$boardRow])) {
+                $printcolumnarray += "[$($cellInRow.xcoord),$($cellInRow.ycoord)]"
+            }
+            write-host $($printcolumnarray -join '')
+        }
     }
+    [void] printAllCellNeighbourCounts () {
+        for ($boardRow=0; $boardRow -lt ($this.board.Count); $boardRow+=1) {
+            $printcolumnarray = @()
+            foreach ($cellInRow in ($this.board[$boardRow])) {
+                $printcolumnarray += "[$($cellInRow.neighbourCount)]"
+            }
+            write-host $($printcolumnarray -join '')
+        }
+    }
+    [void] updateAllCellNeighbourCounts () {
+        for ($boardRow=0; $boardRow -lt ($this.board.Count); $boardRow+=1) {
+            $printcolumnarray = @()
+            foreach ($cellInRow in ($this.board[$boardRow])) {
+                $cellInRow.countNeighbours($this.board)
+            }
+            write-host $($printcolumnarray -join '')
+        }
+    }
+
+    
 
     [string] basicPrint () {
         # write-host "game created with " -nonewline

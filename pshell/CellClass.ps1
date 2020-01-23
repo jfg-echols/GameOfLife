@@ -2,6 +2,7 @@ class Cell {
     [bool] $alive
     [int] $xcoord
     [int] $ycoord
+    [int] $neighbourCount
     
     #constructor
     Cell () {
@@ -43,27 +44,93 @@ class Cell {
             write-host 'X'
         }
     }
-    [void] countNeighbours ($height,$width) {
-        if (this.xcoord -le 0) {
+    [void] countNeighbours ([hashtable] $gameboard) {
+        $height = $gameboard.Count
+        $width = $gameboard[0].count
+        $neighbours = 0
+        
+        #assertions about positioning
+        #TODO: turn the isleft/right/top/bottom variables into properties of the cell and built on construction
+        if (($this.xcoord) -le 0) {
             $isleft = $false
         } else { 
             $isleft = $true
         }
-        if (this.xcoord -ge ($width-1)) {
+        if ($this.xcoord -ge ($width-1)) {
             $isright = $false
         }else {
             $isright = $true
         }
-        if (this.ycoord -le 0) {
+        if ($this.ycoord -le 0) {
             $istop = $false
         }else {
             $istop = $true
         }
-        if (this.ycoord -le ($height -1)) {
+        if ($this.ycoord -le ($height -1)) {
             $isbottom = $false
         } else {
             $isbottom = $true
         }
-        #WORKING HERE
-    }
+        <#
+        NOTES: 
+        1) Y AXIS IS REVERSED ON OUTPUT - SEE RESULTS OF GAME.printCellPositions()
+        2) When calling positions against board hashtable, calls Y position first
+        Entries in the Hashtable (y axis) hold arrays (x axis)
+        #>
+        
+        
+        #top row
+        if (!$istop) {
+            #topleft -1,-1
+            if (!$isleft) {
+                if ($gameboard[$this.ycoord-1][$this.xcoord-1].isalive()) {
+                    $neighbours += 1
+                }
+            }
+            #topmid 0,-1
+            if ($gameboard[$this.ycoord-1][$this.xcoord]) {
+                $neighbours += 1
+            }
+            #topright 1,-1
+            if (!$isright) {
+                if ($gameboard[$this.ycoord-1][$this.xcoord+1]) {
+                    $neighbours += 1
+                }
+            }
+        }
+        #middle row
+        #midleft -1,0
+        if (!$isleft) {
+            if ($gameboard[$this.ycoord][$this.xcoord-1]) {
+                $neighbours += 1
+            }
+        }
+        #midright 1,0
+        if (!$isright) {
+            if ($gameboard[$this.ycoord][$this.xcoord+1]) {
+                $neighbours += 1
+            }
+        }
+        
+        #bottom row
+        if (!$isbottom) {
+            #mottomleft -1,1
+            if (!$isleft) {
+                if ($gameboard[$this.ycoord+1][$this.xcoord-1]) {
+                    $neighbours += 1
+                }
+            }
+            #bottommid 0,1
+            if ($gameboard[$this.ycoord+1][$this.xcoord]) {
+                $neighbours += 1
+            }
+            #bottomright 1,1
+            if (!$isright) {
+                if ($gameboard[$this.ycoord+1][$this.xcoord+1]) {
+                    $neighbours += 1
+                }
+            }
+        }
+        $this.neighbourCount = $neighbours
+    }   
 }

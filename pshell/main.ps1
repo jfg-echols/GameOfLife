@@ -10,20 +10,20 @@ $yvalue = 25
 $thisgame = [LifeGame]::new($xvalue,$yvalue)
 
 $thisgame.newBoard()
+
+#getting cell numbers
+#$thisgame.printCellPositions()
+
 $thisgame.seedBoard()
-
-
-
+#TODO - turn becomes its own class?
 do {
-    # $input = read-host "for next turn press [space] - any other key to end"
     # cls
     $thisgame.printBoard()
+    $thisgame.updateAllCellNeighbourCounts()
+    $thisgame.printAllCellNeighbourCounts() 
     $thisgame.turn += 1
-    start-sleep -seconds 1
+    # start-sleep -seconds 1
+    $input = read-host "for next turn press [space] - any other key to end"
 } until ($thisgame.turn -eq 30)
 
 
-# $thisgame.board[3][3].setLive($true)
-# $thisgame.printBoard()
-#$thisgame.board.count
-# $thisgame.basicPrint()
