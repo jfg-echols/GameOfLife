@@ -2,10 +2,11 @@
 . .\classes\GameClass.ps1
 
 
-$xvalue = 25
-$yvalue = 25
-# $xvalue = read-host "input number of columns:"
-# $yvalue = read-host "input number of rows:"
+# $xvalue = 25
+# $yvalue = 25
+$xvalue = read-host "input number of columns:"
+$yvalue = read-host "input number of rows:"
+$turncount = read-host "number of turns you want this for"
 
 $thisgame = [LifeGame]::new($xvalue,$yvalue)
 
@@ -24,6 +25,6 @@ do {
     $thisgame.turn += 1
     start-sleep -Milliseconds 100
     # $input = read-host "for next turn press [space] - any other key to end"
-} until ($thisgame.turn -eq 50)
+} until ($thisgame.turn -eq $turncount)
 
 
