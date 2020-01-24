@@ -1,6 +1,5 @@
-Remove-Variable * -ErrorAction SilentlyContinue
-. .\CellClass.ps1
-. .\GameClass.ps1
+. .\classes\CellClass.ps1
+. .\classes\GameClass.ps1
 
 
 $xvalue = 25
