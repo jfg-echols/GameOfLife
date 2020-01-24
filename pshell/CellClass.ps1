@@ -8,6 +8,7 @@ class Cell {
     Cell () {
 
     }
+    #TODO - for some reason this didn't work?
     # Cell ($x,$y) {
     #     $this.xcoord = $x
     #     $this.ycoord = $y
@@ -28,7 +29,7 @@ class Cell {
     [void] setYCoord ($y) {
         $this.ycoord = $y
     }
-
+    #TODO - turn this into a function not run in the game class
     # [string] display () {
     #     if ($this.alive) {
     #         return 'O'
@@ -45,11 +46,11 @@ class Cell {
         }
     }
     [void] countNeighbours ([hashtable] $gameboard) {
+        # write-host -f cyan "counting neighbours for y:$($this.ycoord) x:$($this.xcoord)"
+        ##TODO - get rid of these variables
         $height = $gameboard.Count
         $width = $gameboard[0].count
         $neighbours = 0
-        
-
         <#
         NOTES: 
         1) Y AXIS IS REVERSED ON OUTPUT - SEE RESULTS OF GAME.printCellPositions()
@@ -57,59 +58,69 @@ class Cell {
         Entries in the Hashtable (y axis) hold arrays (x axis)
         #>
         
-        
         #top row
         if ($this.ycoord -ge 1) {
-            #topleft -1,-1
             if ($this.xcoord -ge 1) {
                 if ($gameboard[$this.ycoord-1][$this.xcoord-1].isalive()) {
                     $neighbours += 1
                 }
             }
-            #topmid 0,-1
             if ($gameboard[$this.ycoord-1][$this.xcoord].isalive()) {
                 $neighbours += 1
             }
-            #topright 1,-1
-            if ($this.xcoord -le ($width-1)) {
+            if ($this.xcoord -lt ($width-1)) {
                 if ($gameboard[$this.ycoord-1][$this.xcoord+1].isalive()) {
                     $neighbours += 1
                 }
             }
         }
-        #middle row
-        #midleft -1,0
         if ($this.xcoord -ge 1) {
             if ($gameboard[$this.ycoord][$this.xcoord-1].isalive()) {
                 $neighbours += 1
             }
         }
-        #midright 1,0
-        if ($this.xcoord -le ($width-1)) {
+        if ($this.xcoord -lt ($width-1)) {
             if ($gameboard[$this.ycoord][$this.xcoord+1].isalive()) {
                 $neighbours += 1
             }
         }
-        
-        #bottom row
-        if ($this.ycoord -le ($height-1)) {
-            #mottomleft -1,1
+        if ($this.ycoord -lt ($height-1)) {
             if ($this.xcoord -ge 1) {
                 if ($gameboard[$this.ycoord+1][$this.xcoord-1].isalive()) {
                     $neighbours += 1
                 }
             }
-            #bottommid 0,1
             if ($gameboard[$this.ycoord+1][$this.xcoord].isalive()) {
                 $neighbours += 1
             }
-            #bottomright 1,1
-            if ($this.xcoord -le ($width-1)) {
+            if ($this.xcoord -lt ($width-1)) {
                 if ($gameboard[$this.ycoord+1][$this.xcoord+1].isalive()) {
                     $neighbours += 1
                 }
             }
         }
         $this.neighbourCount = $neighbours
+    }
+    [void] populateCell () {
+        <#
+        The Rules
+        For a space that is 'populated':
+            Each cell with one or no neighbors dies, as if by solitude.
+            Each cell with four or more neighbors dies, as if by overpopulation.
+            Each cell with two or three neighbors survives.
+        For a space that is 'empty' or 'unpopulated'
+            Each cell with three neighbors becomes populated.
+        #>
+        if ($this.alive) {
+            if ($this.neighbourCount -le 1) {
+                $this.alive = $false
+            } elseif ($this.neighbourCount -ge 4) {
+                $this.alive = $false
+            }
+        } else {
+            if ($this.neighbourCount -eq 3) {
+                $this.alive = $true
+            }
+        }
     }   
 }

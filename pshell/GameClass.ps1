@@ -16,14 +16,35 @@ class LifeGame {
         $length = $this.xvalue
         $boardRowsArray = @{}
         for ($boardRow=0;$boardRow -lt $height; $boardRow+=1) {
-
             $boardColumnsArray = @()
-            
             for ($colcount=0; $colcount -lt $length; $colcount+=1) {
-                #want to use a constructor with the variables, but it won't work for some reason
+                #TODO - want to use a constructor with the variables, but it won't work for some reason
                 [Cell] $thisCell = [Cell]::new()
                 $thisCell.setLive($false)
-                # write-host $($thisCell.isAlive())
+                $thisCell.setXCoord($colcount)
+                $thisCell.setYCoord($boardRow)
+                $boardColumnsArray += $thisCell
+            }
+            $boardRowsArray[$boardRow] = $boardColumnsArray     
+        }
+        $this.board = $boardRowsArray
+    }
+    
+    [void] newRandomBoard () {
+        $height = $this.yvalue
+        $length = $this.xvalue
+        $boardRowsArray = @{}
+        for ($boardRow=0;$boardRow -lt $height; $boardRow+=1) {
+            $boardColumnsArray = @()
+            for ($colcount=0; $colcount -lt $length; $colcount+=1) {
+                #TODO - want to use a constructor with the variables, but it won't work for some reason
+                [Cell] $thisCell = [Cell]::new()
+                $rand = Get-Random -Maximum 2
+                if ($rand -eq 1) {
+                    $thisCell.setLive($false)
+                } else {
+                    $thisCell.setLive($true)
+                }
                 $thisCell.setXCoord($colcount)
                 $thisCell.setYCoord($boardRow)
                 $boardColumnsArray += $thisCell
@@ -47,18 +68,18 @@ class LifeGame {
     }
 
     [void] printBoard () {
-        write-host ":::::::::: $($this.turn) ::::::::::"
+        $display = "{0:00}" -f $this.turn
+        write-host "turn: $display"
         for ($boardRow=0;$boardRow -lt ($this.board.Count);$boardRow+=1) {
             $printcolumnarray = @()
             foreach ($cellInRow in ($this.board[$boardRow])) {
                 if ($cellInRow.isAlive()) {
                     $printcolumnarray += "O"
                 } else {
-                    $printcolumnarray += "-"
+                    $printcolumnarray += " "
                 }
             }
-
-            write-host $($printcolumnarray -join ' ')
+            write-host "|$($printcolumnarray -join ' ')|"
         }
     }
 
@@ -72,7 +93,6 @@ class LifeGame {
         }
     }
     [void] printAllCellNeighbourCounts () {
-        write-host "printcellneighbours"
         for ($boardRow=0; $boardRow -lt ($this.board.Count); $boardRow+=1) {
             $printcolumnarray = @()
             foreach ($cellInRow in ($this.board[$boardRow])) {
@@ -82,23 +102,21 @@ class LifeGame {
         }
     }
     [void] updateAllCellNeighbourCounts () {
-        write-host "update cell neighbours"
         for ($boardRow=0; $boardRow -lt ($this.board.Count); $boardRow+=1) {
-            $printcolumnarray = @()
             foreach ($cellInRow in ($this.board[$boardRow])) {
                 $cellInRow.countNeighbours($this.board)
             }
         }
     }
-
-    
+    [void] updateAllCellPopulations () {
+        for ($boardRow=0; $boardRow -lt ($this.board.Count); $boardRow+=1) {
+            foreach ($cellInRow in ($this.board[$boardRow])) {
+                $cellInRow.populateCell()
+            }
+        }
+    }
 
     [string] basicPrint () {
-        # write-host "game created with " -nonewline
-        # write-host -f yellow $($this.yvalue) -NoNewline
-        # write-host "rows and " -nonewline
-        # write-host -f yellow $($this.xvalue) -nonewline 
-        # write-host "columns"
         return "game created with $($this.yvalue) rows and $($this.xvalue) columns"
     }
 }
