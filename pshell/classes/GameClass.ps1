@@ -1,4 +1,4 @@
-. .\CellClass.ps1
+. .\classes\CellClass.ps1
 class LifeGame {
     [int] $xvalue
     [int] $yvalue
